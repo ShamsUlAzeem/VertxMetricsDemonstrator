@@ -65,13 +65,11 @@ public class VerticleMetricsDemonstrator {
                     if (handler.succeeded()) {
                         deploymentId.set(handler.result());
                         for (int i = 0; i < numberOfRequests; i++) {
-                            httpClient.get(8080, "localhost", "/",
-                                    response ->
-                                            response.bodyHandler(buffer -> {
-                                                        requestsDone.incrementAndGet();
-                                                        countDownLatch.countDown();
-                                                    }
-                                            )
+                            httpClient.get(8080, "localhost", "/", response -> response.bodyHandler(buffer -> {
+                                        requestsDone.incrementAndGet();
+                                        countDownLatch.countDown();
+                                    }
+                                )
                             ).end();
                         }
                     } else {
