@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.example;
+package tests.shamsulazeem;
 
 import io.vertx.core.*;
 import io.vertx.core.http.HttpClient;
