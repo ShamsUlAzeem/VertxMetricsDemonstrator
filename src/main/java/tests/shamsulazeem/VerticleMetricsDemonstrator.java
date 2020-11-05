@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * @author <a href="https://github.com/ShamsUlAzeem">ShamsUlAzeem</a>
+ * @author <a href="https://github.com/ShamsUlAzeem">Shams Ul Azeem</a>
  */
 public class VerticleMetricsDemonstrator {
 
@@ -56,7 +56,7 @@ public class VerticleMetricsDemonstrator {
 
         vertx.undeploy(deploymentId, handler -> {
             if (handler.succeeded()) {
-                System.out.println(String.format("Deployment with id=\"%s\" undeployed successfully!", deploymentId));
+                System.out.printf("Deployment with id=\"%s\" undeployed successfully!%n", deploymentId);
                 countDownLatch.countDown();
             } else {
                 handler.cause().printStackTrace();
@@ -94,13 +94,13 @@ public class VerticleMetricsDemonstrator {
                     }
                 });
 
-        long periodicTimerId = vertx.setPeriodic(1000, handler -> System.out.println(String.format("Requests done are: %s", requestsDone.get())));
+        long periodicTimerId = vertx.setPeriodic(1000, handler -> System.out.printf("Requests done are: %s%n", requestsDone.get()));
         countDownLatch.await();
 
         vertx.cancelTimer(periodicTimerId);
 
         long elapsedTime = System.currentTimeMillis() - currentTime.get();
-        System.out.println(String.format("Time passed between %s requests on %s verticle(s) is: %s milli seconds", numberOfRequests, verticleInstances, elapsedTime));
+        System.out.printf("Time passed between %s requests on %s verticle(s) is: %s milli seconds%n", numberOfRequests, verticleInstances, elapsedTime);
 
         unDeploy(deploymentId.get());
 
@@ -143,11 +143,11 @@ public class VerticleMetricsDemonstrator {
             System.out.println("-------------------------------------------------------------------------");
             for (int i = 0; i < statDetails.size(); i++) {
                 StatDetail statDetail = statDetails.get(i);
-                System.out.println(String.format("| %18s | %18s | %12s | %12s |",
+                System.out.printf("| %18s | %18s | %12s | %12s |%n",
                         statDetail.numberOfRequests,
                         statDetail.verticleInstances,
                         statDetail.elapsedTime,
-                        calculateGain(i)));
+                        calculateGain(i));
             }
             System.out.println("-------------------------------------------------------------------------\n\n\n");
         }
