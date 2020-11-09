@@ -17,7 +17,7 @@
 package tests.shamsulazeem;
 
 import io.vertx.core.*;
-import io.vertx.core.http.HttpClient;
+import io.vertx.ext.web.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class VerticleMetricsDemonstrator {
         AtomicInteger requestsDone = new AtomicInteger(0);
         AtomicReference<String> deploymentId = new AtomicReference<>();
         CountDownLatch countDownLatch = new CountDownLatch(numberOfRequests);
-        HttpClient httpClient = vertx.createHttpClient();
+        WebClient client = WebClient.create(vertx);
 
         vertx.deployVerticle(HttpServerVerticle.class,
                 new DeploymentOptions().setInstances(verticleInstances), handler -> {
@@ -80,14 +80,16 @@ public class VerticleMetricsDemonstrator {
 
                     if (handler.succeeded()) {
                         deploymentId.set(handler.result());
-                        for (int i = 0; i < numberOfRequests; i++) {
-                            httpClient.get(8080, "localhost", "/", response -> response.bodyHandler(buffer -> {
+                            for(int i = 0; i < numberOfRequests; i++) {
+                                client.get(8080, "localhost", "/").send(requestHandler -> {
+                                    if(requestHandler.succeeded()) {
                                         requestsDone.incrementAndGet();
                                         countDownLatch.countDown();
+                                    } else {
+                                        System.exit(-1);
                                     }
-                                )
-                            ).end();
-                        }
+                                });
+                            }
                     } else {
                         handler.cause().printStackTrace();
                         System.exit(-1);

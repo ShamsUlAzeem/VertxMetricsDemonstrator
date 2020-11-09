@@ -37,7 +37,7 @@
 
     <!-- the main class -->
     <exec.mainClass>tests.shamsulazeem.VerticleMetricsDemonstrator</exec.mainClass>
-
+    <vertx.stack.version>3.9.1</vertx.stack.version>
   </properties>
 
   <dependencyManagement>
@@ -56,7 +56,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>3.8.5</version>
+      <version>${vertx.stack.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web-client</artifactId>
+      <version>${vertx.stack.version}</version>
     </dependency>
   </dependencies>
 
