@@ -17,8 +17,11 @@
 package tests.shamsulazeem;
 
 import io.vertx.core.*;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.multipart.MultipartForm;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -36,7 +39,7 @@ public class VerticleMetricsDemonstrator {
 
     public static void main(String[] args) throws InterruptedException {
         List<Integer> instancesArray = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i <= 1; i++) {
             instancesArray.add(i);
         }
 
@@ -45,8 +48,8 @@ public class VerticleMetricsDemonstrator {
             arrayToPass[i] = instancesArray.get(i);
         }
 
-        testVerticles(5000, arrayToPass).printStats();
         testVerticles(10000, arrayToPass).printStats();
+        //testVerticles(1, arrayToPass).printStats();
 
         vertx.close();
     }
@@ -78,14 +81,25 @@ public class VerticleMetricsDemonstrator {
                 new DeploymentOptions().setInstances(verticleInstances), handler -> {
                     currentTime.set(System.currentTimeMillis());
 
+                    File file = new File("C:\\Users\\shams\\Downloads\\image.jpg");
+
                     if (handler.succeeded()) {
                         deploymentId.set(handler.result());
+                            MultipartForm multipartForm = MultipartForm.create();
+                            multipartForm.binaryFileUpload("image", file.getName(), file.getAbsolutePath(), "image/jpeg");
+
                             for(int i = 0; i < numberOfRequests; i++) {
-                                client.get(8080, "localhost", "/").send(requestHandler -> {
+                                //client.postAbs("http://localhost:8080/api/v1/PkFRupFiD7xKlPJHLAvr/rpc")
+                                client.postAbs("http://localhost:8080/api/v1/PkFRupFiD7xKlPJHLAvr/telemetry")
+                                //client.postAbs("https://demo.thingsboard.io/api/v1/sL7S6LnNMFTh2ZyTxPgm/telemetry")
+                                        .sendJsonObject(new JsonObject().put("temperature", 1), requestHandler -> {
+                                        //.sendJsonObject(new JsonObject().put("method", "some_method").put("params", new JsonObject().put("temperature", 1)), requestHandler -> {
                                     if(requestHandler.succeeded()) {
+                                        //System.out.println(requestHandler.result().bodyAsString());
                                         requestsDone.incrementAndGet();
                                         countDownLatch.countDown();
                                     } else {
+                                        System.out.println(requestHandler.cause().getMessage());
                                         System.exit(-1);
                                     }
                                 });
@@ -180,7 +194,7 @@ public class VerticleMetricsDemonstrator {
 
                         req.response().end("Output");
                     })
-                    .listen(8080, handler -> {
+                    .listen(0, handler -> {
                         if (handler.succeeded()) startPromise.complete();
                         else startPromise.fail(handler.cause());
                     });
