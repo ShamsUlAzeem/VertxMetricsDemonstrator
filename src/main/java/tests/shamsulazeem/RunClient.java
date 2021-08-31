@@ -10,8 +10,8 @@ import java.util.stream.IntStream;
 
 public class RunClient {
 
-    private static int clients = 150;
-    private static int totalRequests = 1000000;
+    private static final int clients = 150;
+    private static final int totalRequests = 1000000;
 
     public static void main(String[] args) throws InterruptedException {
         int numberOfRequests = totalRequests / clients;
